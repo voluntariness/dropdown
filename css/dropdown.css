@@ -1,0 +1,23 @@
+.dropdown-toggle {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+.dropdown-toggle:before {
+    float: right;
+    vertical-align: bottom;
+    font-size: 6px;
+    font-family: 'Glyphicons Halflings';
+    content: "\e252";
+}
+.dropdown-menu > .options > button {
+    width: 50%;
+}
+.dropdown-menu > li > a {
+    cursor: pointer;
+}
+.dropdown-items > .item.selected:before {
+    margin-right: 5px;
+    font-family: 'Glyphicons Halflings';
+    content: "\e013";
+}

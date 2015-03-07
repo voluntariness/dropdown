@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+    <link href="css/dropdown.css" rel="stylesheet" type="text/css" />
+    <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+    <script src="//code.jquery.com/jquery.min.js"></script>
+    <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.2/js/bootstrap.min.js"></script>
+    <script src="js/dropdown.js"></script>
+    <meta charset="utf-8">
+    <title>DropDown</title>
+</head>
+<body>
+    <select id="select-data" multiple="true">
+        <option value="1" > ActionScr   </option>
+        <option value="2" > AppleScri   </option>
+        <option value="3" > Asp         </option>
+        <option value="4" > BASIC       </option>
+        <option value="5" > C           </option>
+        <option value="6" > C++         </option>
+        <option value="7" > Clojure     </option>
+        <option value="8" > COBOL       </option>
+        <option value="9" > ColdFusio   </option>
+        <option value="10" > Erlang     </option>
+        <option value="11" > Fortran    </option>
+        <option value="12" > Groovy     </option>
+        <option value="13" > Haskell    </option>
+        <option value="14" > Java       </option>
+        <option value="15" > JavaScri   </option>
+        <option value="16" > Lisp       </option>
+        <option value="17" > Perl       </option>
+        <option value="18" > PHP        </option>
+        <option value="19" > Python     </option>
+        <option value="20" > Ruby       </option>
+        <option value="21" > Scala      </option>
+        <option value="22" > Scheme     </option>
+    </select>
+
+
+    <script>
+        $('#select-data').dropdown({
+            // source : [{'value' => 1, 'name' => 'ActionScri}, {'value' => 2, 'name' => 'AppleScrip}, {'value' => 3, 'name' => 'Asp'}, {'value' => 4, 'name' => 'BASIC'}, {'value' => 5, 'name' => 'C'}, {'value' => 6, 'name' => 'C++'}, {'value' => 7, 'name' => 'Clojure'}, {'value' => 8, 'name' => 'COBOL'}, {'value' => 9, 'name' => 'ColdFusion}, {'value' => 10, 'name' => 'Erlang'}, {'value' => 11, 'name' => 'Fortran'}, {'value' => 12, 'name' => 'Groovy'}, {'value' => 13, 'name' => 'Haskell'}, {'value' => 14, 'name' => 'Java'}, {'value' => 15, 'name' => 'JavaScrip}, {'value' => 16, 'name' => 'Lisp'}, {'value' => 17, 'name' => 'Perl'}, {'value' => 18, 'name' => 'PHP'}, {'value' => 19, 'name' => 'Python'}, {'value' => 20, 'name' => 'Ruby'}, {'value' => 21, 'name' => 'Scala'}, {'value' => 22, 'name' => 'Scheme'}],
+            // source: 'data/data.php'
+            width: 200,
+            filter: function (query, o) {
+                return query.length === 0 || o.name.indexOf(query) >= 0;
+            }
+        });
+    </script>
+</body>
+</html>
