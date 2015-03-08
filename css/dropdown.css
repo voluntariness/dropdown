@@ -1,22 +1,23 @@
-.dropdown-toggle {
+.dropdown-select .dropdown-toggle {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+    width: 100%;
 }
-.dropdown-toggle:before {
+.dropdown-select .dropdown-toggle:before {
     float: right;
     vertical-align: bottom;
     font-size: 6px;
     font-family: 'Glyphicons Halflings';
     content: "\e252";
 }
-.dropdown-menu > .options > button {
+.dropdown-select .dropdown-menu > .options > button {
     width: 50%;
 }
-.dropdown-menu > li > a {
+.dropdown-select .dropdown-menu > li > a {
     cursor: pointer;
 }
-.dropdown-items > .item.selected:before {
+.dropdown-select .dropdown-items > .item.selected:before {
     margin-right: 5px;
     font-family: 'Glyphicons Halflings';
     content: "\e013";
