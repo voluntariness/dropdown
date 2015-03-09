@@ -24,11 +24,13 @@ $.fn.extend({
             var $clear = $('<button type="button" class="btn btn-default">取消選取</button>');
             var $finish = $('<button type="butto" class="btn btn-info">完成</button>')
             var $items = $('<li class="dropdown-items dds-items"/>');
-            var $loading = $('<li class="dropdown-loading" />');
+            var $loading = $('<li class="dds-loading" />').hide();
 
             var isMulti = $this.prop('multiple');
 
-            $menu.append($('<li>').append($searchGroup))
+            $menu.append($('<li>')
+                .append($searchGroup));
+
             if (isMulti) {
                 $menu.append('<li class="divider">')
                     .append($('<li class="dds-options">').append($clear).append($finish))
@@ -48,6 +50,16 @@ $.fn.extend({
                     items['option-' + this.value].$item.remove();
                     delete items['option-' + this.value];
                 });
+                $('#select-data optgroup')
+                    .filter(function () { 
+                        return $(this).children().length === 0; 
+                    })
+                    .each(function () {
+                        var key = 'optgroup-' + $(this).attr('label');
+                        items[key].$optgroup.remove();
+                        items[key].$itemgroup.remove();
+                        delete items[key];
+                    });
                 $this.trigger('dds.refresh')
             }
 
@@ -82,24 +94,23 @@ $.fn.extend({
             var loadSource = function () {
 
                 var query = $input.val();
-
+                $loading.show();
                 if (typeof options.source === 'string') {
 
                     $.ajax(options.source, {type: options.ajaxType , data: {query: query}, dataType: 'json'})
                         .done(function (request) {
+                            $loading.hide();
                             $this.trigger('dds.loadData', [request]);
                         })
                         .fail(function (request) {
                             console.log(request);
                         });
                 } else {
-
+                    $loading.hide();
                     $this.trigger('dds.loadData', [options.source]);
 
                 }
             }
-
-
 
             $button.bind('click', function () {
                 if ($menu.is(':visible')) {
@@ -120,13 +131,6 @@ $.fn.extend({
             $search.bind('click', function () {
                 loadSource();
             });
-
-            // $(document).bind('mousedown', function (e) {
-            //     if ($(e.target).parents('.dropdown').length === 0) {
-            //         $this.trigger('dds.hide');
-            //     }
-            // });
-
 
             $input.bind('input', function () {
 

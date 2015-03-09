@@ -19,7 +19,7 @@
 </head>
 <body>
     <select id="select-data" name="sd[]" multiple >
-        <optgroup label="Group-1">
+<!--         <optgroup label="Group-1">
             <option value="1" > ActionScript</option>
             <option value="2" > AppleScript </option>
             <option value="3" selected> Asp         </option>
@@ -44,14 +44,14 @@
         <option value="19" > Python     </option>
         <option value="20" > Ruby       </option>
         <option value="21" > Scala      </option>
-        <option value="22" > Scheme     </option>
+        <option value="22" > Scheme     </option> -->
     </select>
 
 
     <script>
         $('#select-data').dropdown({
             // source : [{'value' => 1, 'name' => 'ActionScri}, {'value' => 2, 'name' => 'AppleScrip}, {'value' => 3, 'name' => 'Asp'}, {'value' => 4, 'name' => 'BASIC'}, {'value' => 5, 'name' => 'C'}, {'value' => 6, 'name' => 'C++'}, {'value' => 7, 'name' => 'Clojure'}, {'value' => 8, 'name' => 'COBOL'}, {'value' => 9, 'name' => 'ColdFusion}, {'value' => 10, 'name' => 'Erlang'}, {'value' => 11, 'name' => 'Fortran'}, {'value' => 12, 'name' => 'Groovy'}, {'value' => 13, 'name' => 'Haskell'}, {'value' => 14, 'name' => 'Java'}, {'value' => 15, 'name' => 'JavaScrip}, {'value' => 16, 'name' => 'Lisp'}, {'value' => 17, 'name' => 'Perl'}, {'value' => 18, 'name' => 'PHP'}, {'value' => 19, 'name' => 'Python'}, {'value' => 20, 'name' => 'Ruby'}, {'value' => 21, 'name' => 'Scala'}, {'value' => 22, 'name' => 'Scheme'}],
-            // source: 'data/data.php'
+            source: 'data/data.php',
             width: 200,
             filter: function (query, o) {
                 return query.length === 0 || o.name.indexOf(query) >= 0;
