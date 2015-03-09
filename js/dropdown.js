@@ -3,6 +3,7 @@
 $.fn.extend({
     dropdown: function (options) {
         options = options || {};
+        options.search = options.search === false ? false : true;
         options.ajaxType = (options.ajaxType && options.ajaxType.toUpperCase() == 'POST') ? 'post' : 'get';
         options.filter = options.filter || function () { return true; };
         return this.each(function () {
@@ -28,15 +29,16 @@ $.fn.extend({
 
             var isMulti = $this.prop('multiple');
 
-            $menu.append($('<li>')
-                .append($searchGroup));
-
-            if (isMulti) {
-                $menu.append('<li class="divider">')
-                    .append($('<li class="dds-options">').append($clear).append($finish))
+            if (options.search) {
+                $menu.append($('<li>').append($searchGroup))
+                    .append('<li class="divider">');
             }
-            $menu.append('<li class="divider">')
-                .append($items)
+
+            // if (isMulti) {
+            //     $menu.append('<li class="divider">')
+            //         .append($('<li class="dds-options">').append($clear).append($finish))
+            // }
+            $menu.append($items)
                 .append($loading);
 
 
@@ -120,16 +122,22 @@ $.fn.extend({
                 }
             });
             
-            $clear.bind('click', function () {
-                $this.val(null).trigger('dds.refresh');
-            });
+            // $clear.bind('click', function () {
+            //     $this.val(null).trigger('dds.refresh');
+            // });
 
-            $finish.bind('click', function () {
-                $this.trigger('dds.hide');
-            });
+            // $finish.bind('click', function () {
+            //     $this.trigger('dds.hide');
+            // });
 
             $search.bind('click', function () {
                 loadSource();
+            });
+
+            $('html').bind('mousedown', function (e) {
+                if ($(e.target).closest($wrap).length === 0) {
+                    $this.trigger('dds.hide');
+                }
             });
 
             $input.bind('input', function () {

@@ -43,5 +43,6 @@ foreach ($list as $arr) {
         $matchs[] = $arr;
     }
 }
+sleep(2);
 // exit('<pre>' . print_r($matchs, true));
 exit(json_encode(array_values($matchs)));

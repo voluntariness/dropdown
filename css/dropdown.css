@@ -11,7 +11,9 @@
     font-family: 'Glyphicons Halflings';
     content: "\e252";
 }
-
+.dds-wrap .dropdown-menu {
+    width: 100%;
+}
 .dds-wrap .dds-search {
     cursor: pointer;
 }

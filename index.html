@@ -46,13 +46,16 @@
         <option value="21" > Scala      </option>
         <option value="22" > Scheme     </option> -->
     </select>
+    <select id="select-data2" name="sd[]" multiple >
+    </select>
 
 
     <script>
-        $('#select-data').dropdown({
+        $('select').dropdown({
             // source : [{'value' => 1, 'name' => 'ActionScri}, {'value' => 2, 'name' => 'AppleScrip}, {'value' => 3, 'name' => 'Asp'}, {'value' => 4, 'name' => 'BASIC'}, {'value' => 5, 'name' => 'C'}, {'value' => 6, 'name' => 'C++'}, {'value' => 7, 'name' => 'Clojure'}, {'value' => 8, 'name' => 'COBOL'}, {'value' => 9, 'name' => 'ColdFusion}, {'value' => 10, 'name' => 'Erlang'}, {'value' => 11, 'name' => 'Fortran'}, {'value' => 12, 'name' => 'Groovy'}, {'value' => 13, 'name' => 'Haskell'}, {'value' => 14, 'name' => 'Java'}, {'value' => 15, 'name' => 'JavaScrip}, {'value' => 16, 'name' => 'Lisp'}, {'value' => 17, 'name' => 'Perl'}, {'value' => 18, 'name' => 'PHP'}, {'value' => 19, 'name' => 'Python'}, {'value' => 20, 'name' => 'Ruby'}, {'value' => 21, 'name' => 'Scala'}, {'value' => 22, 'name' => 'Scheme'}],
             source: 'data/data.php',
-            width: 200,
+            search: false,
+            width: 400,
             filter: function (query, o) {
                 return query.length === 0 || o.name.indexOf(query) >= 0;
             }
