@@ -9,26 +9,37 @@
     <script src="js/dropdown.js"></script>
     <meta charset="utf-8">
     <title>DropDown</title>
+    <style>
+        select#select-data{
+            width: 200px;
+            height: 300px;
+            float:left;
+        }
+    </style>
 </head>
 <body>
-    <select id="select-data" multiple="true">
-        <option value="1" > ActionScr   </option>
-        <option value="2" > AppleScri   </option>
-        <option value="3" > Asp         </option>
-        <option value="4" > BASIC       </option>
-        <option value="5" > C           </option>
-        <option value="6" > C++         </option>
-        <option value="7" > Clojure     </option>
-        <option value="8" > COBOL       </option>
-        <option value="9" > ColdFusio   </option>
-        <option value="10" > Erlang     </option>
-        <option value="11" > Fortran    </option>
-        <option value="12" > Groovy     </option>
-        <option value="13" > Haskell    </option>
-        <option value="14" > Java       </option>
+    <select id="select-data" name="sd[]" multiple >
+        <optgroup label="Group-1">
+            <option value="1" > ActionScript</option>
+            <option value="2" > AppleScript </option>
+            <option value="3" selected> Asp         </option>
+            <option value="4" > BASIC       </option>
+            <option value="5" > C           </option>
+            <option value="6" > C++         </option>
+            <option value="7" > Clojure     </option>
+        </optgroup>
+        <optgroup label="Group-2">
+            <option value="8" > COBOL       </option>
+            <option value="9" > ColdFusio   </option>
+            <option value="10" > Erlang     </option>
+            <option value="11" selected> Fortran    </option>
+            <option value="12" > Groovy     </option>
+            <option value="13" > Haskell    </option>
+            <option value="14" > Java       </option>
+        </optgroup>
         <option value="15" > JavaScri   </option>
         <option value="16" > Lisp       </option>
-        <option value="17" > Perl       </option>
+        <option value="17" selected> Perl       </option>
         <option value="18" > PHP        </option>
         <option value="19" > Python     </option>
         <option value="20" > Ruby       </option>

@@ -1,23 +1,60 @@
-.dropdown-select .dropdown-toggle {
+.dds-wrap .dropdown-toggle {
     text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
     width: 100%;
 }
-.dropdown-select .dropdown-toggle:before {
+.dds-wrap .dropdown-toggle:before {
     float: right;
     vertical-align: bottom;
     font-size: 6px;
     font-family: 'Glyphicons Halflings';
     content: "\e252";
 }
-.dropdown-select .dropdown-menu > .options > button {
-    width: 50%;
-}
-.dropdown-select .dropdown-menu > li > a {
+
+.dds-wrap .dds-search {
     cursor: pointer;
 }
-.dropdown-select .dropdown-items > .item.selected:before {
+.dds-wrap .dds-search:hover {
+    background: #e6e6e6;
+}
+.dds-wrap .dds-search:active {
+    outline: 0;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+            box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
+}
+.dds-wrap .dds-options > * { width: 50%; }
+.dds-wrap .dropdown-menu .dds-itemgroup {
+    padding: 5px 0;
+    border-bottom: 1px solid #ccc;
+}
+.dds-wrap .dropdown-menu .dds-itemgroup > label{
+    display: block;
+    padding: 5px 20px;
+    background: #ddd;
+}
+
+.dds-wrap .dropdown-menu .dds-items {
+    height: 300px;
+    overflow-y: auto;
+}
+.dds-wrap .dropdown-menu .dds-items a  {
+    display: block;
+    padding: 3px 20px;
+    clear: both;
+    font-weight: 400;
+    line-height: 1.42857143;
+    color: #333;
+    white-space: nowrap;
+    cursor: pointer;
+}
+.dds-wrap .dropdown-menu .dds-items a:hover {
+    color: #262626;
+    text-decoration: none;
+    background-color: #eee;
+}
+
+.dds-wrap .dropdown-items .item.selected:before {
     margin-right: 5px;
     font-family: 'Glyphicons Halflings';
     content: "\e013";

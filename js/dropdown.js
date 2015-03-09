@@ -1,44 +1,104 @@
-
+"use strict";
 
 $.fn.extend({
     dropdown: function (options) {
-        
         options = options || {};
         options.ajaxType = (options.ajaxType && options.ajaxType.toUpperCase() == 'POST') ? 'post' : 'get';
+        options.filter = options.filter || function () { return true; };
         return this.each(function () {
-
-
             var $this = $(this).hide();
-            var $wrap = $('<div class="btn-group dropdown dropdown-select">')
+            var $wrap = $('<div class="btn-group dropdown dds-wrap">')
                 .css('width', options.width || 'auto')
                 .insertAfter($this);
             var $button = $('<button type="button">')
-                .attr({
-                    'class': 'btn btn-default dropdown-toggle',
-                    'aria-expanded': 'false'
-                })
+                .attr({'class': 'btn btn-default dropdown-toggle', 'aria-expanded': 'false'})
                 .html(($this.attr('title') || '請選擇'))
                 .appendTo($wrap);
             var $menu = $('<ul class="dropdown-menu" role="menu"/>')
                             .appendTo($wrap);
-            var $field = $('<input type="text" class="form-control">');
-            var $line = $('<li class="divider">');
+            var $input = $('<input type="text" class="dds-input form-control">');
+            var $search = $('<div class="input-group-addon dds-search"><span class="glyphicon glyphicon-search"></span></div>');
+            var $searchGroup = $('<div class="input-group" />')
+                                    .append($input)
+                                    .append($search);
             var $clear = $('<button type="button" class="btn btn-default">取消選取</button>');
-            var $search = $('<button type="button" class="btn btn-info">查詢</button>');
-            var $items = $('<li class="dropdown-items"/>');
+            var $finish = $('<button type="butto" class="btn btn-info">完成</button>')
+            var $items = $('<li class="dropdown-items dds-items"/>');
             var $loading = $('<li class="dropdown-loading" />');
 
+            var isMulti = $this.prop('multiple');
 
-            $menu.append($('<li>').append($field))
-                .append('<li class="divider">')
-                .append($('<li class="options">').append([$clear, $search]))
-                .append($line)
+            $menu.append($('<li>').append($searchGroup))
+            if (isMulti) {
+                $menu.append('<li class="divider">')
+                    .append($('<li class="dds-options">').append($clear).append($finish))
+            }
+            $menu.append('<li class="divider">')
                 .append($items)
                 .append($loading);
 
 
             $this.data('dropdown', $wrap);
-            $this.data('items', []);
+            $this.data('items', {});
+
+            var removeNoSelected = function () {
+                var items = $this.data('items');
+                $this.find('option').not(':selected').each(function () {
+                    items['option-' + this.value].$option.remove();
+                    items['option-' + this.value].$item.remove();
+                    delete items['option-' + this.value];
+                });
+                $this.trigger('dds.refresh')
+            }
+
+            var createOption = function (o, items) {
+                var key = 'option-' + o.value;
+                if (! items[key]) {
+
+                    items[key] = {};
+
+                    items[key].$option = $('<option/>')
+                        .val(o.value)
+                        .html(o.name);
+
+                    items[key].$item = $('<a class="item" />')
+                        .attr('item-value', o.value)
+                        .html(o.name)
+                        .bind('click', function () {
+                            var selected = isMulti ? ! items[key].$option.prop('selected') : true;
+                            items[key].$option.prop('selected', selected);
+                            $this.trigger('dds.refresh');
+                            if (! isMulti) {
+                                $this.trigger('dds.hide');
+                            }
+                        });
+
+
+                    return items[key];
+                }
+                return false;
+            }
+
+            var loadSource = function () {
+
+                var query = $input.val();
+
+                if (typeof options.source === 'string') {
+
+                    $.ajax(options.source, {type: options.ajaxType , data: {query: query}, dataType: 'json'})
+                        .done(function (request) {
+                            $this.trigger('dds.loadData', [request]);
+                        })
+                        .fail(function (request) {
+                            console.log(request);
+                        });
+                } else {
+
+                    $this.trigger('dds.loadData', [options.source]);
+
+                }
+            }
+
 
 
             $button.bind('click', function () {
@@ -50,21 +110,25 @@ $.fn.extend({
             });
             
             $clear.bind('click', function () {
-                $this.trigger('dds.setValue', [null]);
+                $this.val(null).trigger('dds.refresh');
+            });
+
+            $finish.bind('click', function () {
+                $this.trigger('dds.hide');
             });
 
             $search.bind('click', function () {
-                $this.trigger('dds.getSource');
+                loadSource();
             });
 
-            $(document).bind('mousedown', function (e) {
-                if ($(e.target).parents('.dropdown').length === 0) {
-                    $this.trigger('dds.hide');
-                }
-            });
+            // $(document).bind('mousedown', function (e) {
+            //     if ($(e.target).parents('.dropdown').length === 0) {
+            //         $this.trigger('dds.hide');
+            //     }
+            // });
 
 
-            $field.bind('input', function () {
+            $input.bind('input', function () {
 
                 $(this)
                     .attr('title', ' 按 Enter 查詢 ')
@@ -76,7 +140,7 @@ $.fn.extend({
                     $(this)
                         .removeAttr('title')
                         .tooltip('destroy');
-                    $this.trigger('dds.getSource');
+                    loadSource();
                     e.preventDefault();
 
                 }
@@ -90,115 +154,95 @@ $.fn.extend({
                 .bind('dds.show', function () {
                     $menu.show();
                 })
-                .bind('dds.setValue', function (e, value) {
-                    var name = [];
+                .bind('dds.refresh', function (e, value) {
                     var items = $this.data('items');
+                    var values = $this.val() !== null ? isMulti ? $this.val() : [$this.val()] : [];
+                    var name = [];
                     $items.find('.selected').removeClass('selected');
-                    if ($this.prop('multiple')) {
-                        value = $.isArray(value) ? value : [];
-                        $.each(value, function (i, v) {
-                            items[v].addClass('selected');
-                            name.push(items[v].data('item-data').name);
-                        });
-                        name = name.join(', ');
-                    } else {
-                        value = (items[value]) ? value.toString() : Object.keys(items)[0];
-                        items[value].addClass('selected');
-                        name = items[value].data('item-data').name;
+                    for (var i in values) {
+                        items['option-' + values[i]].$item.addClass('selected');
+                        name.push(items['option-' + values[i]].$item.text());
                     }
-
-                    $this.val(value);
-                    $button.html(name || '請選擇');
-
-                })
-                .bind('dds.clear.noSelect', function () {
-
-                })
-                .bind('dds.getSource', function () {
-
-                    var query = $field.val();
-                    if (typeof options.source === 'string') {
-
-                        $.ajax(options.source, {type: options.ajaxType , data: {query: query}, dataType: 'json'})
-                            .done(function (request) {
-                                $this.trigger('dds.loadData', [request]);
-                            })
-                            .fail(function (request) {
-                                console.log(request);
-                            });
-                    } else {
-
-                        $this.trigger('dds.loadData', [options.source]);
-
-                    }
-
+                    name = name.length ? name.join(', ') : '請選擇';
+                    $button.html(name).attr('title', name);
                 })
                 .bind('dds.loadData', function (e, data) {
 
-                    var query = $field.val();
+                    var query = $input.val();
                     var items = $this.data('items');
 
-                    $this.trigger('dds.clear.noSelect');
+                    removeNoSelected();
 
                     $.each(data, function (i, o) {
 
-                        if (typeof options.filter === 'function') {
-                            if (options.filter(query, o) === false) return;
-                        }
-
-
-                        if (! items[o.value]) {
-
-                            $('<option/>')
-                                .val(o.value)
-                                .appendTo($this);
-
-
-                            items[o.value] = $('<a class="item" />')
-                                .data('item-data', o)
-                                .attr('item-value', o.value)
-                                .html(o.name)
-                                .appendTo($items)
-                                .bind('click', function () {
-
-                                    var selected = $this.val() || [];
-                                    var value = $(this).data('item-data').value.toString();
-                                    if ($this.prop('multiple')) {
-                                        var idx = selected.indexOf(value);
-
-                                        if (idx >= 0) {
-                                            selected.splice(idx, 1);
-                                        } else {
-                                            selected.push(value);
-                                        }
-
-                                    } else {
-                                        selected = value;
-                                        $this.trigger('dds.hide');
+                        /* optgroup */
+                        if (o.is_optgroup) {
+                            var key = 'optgroup-' + o.label;
+                            if (! items[key]) {
+                                items[key] = {};
+                                items[key].$optgroup = $('<optgroup/>')
+                                    .attr('label', o.label)
+                                    .appendTo($this);
+                                items[key].$itemgroup = $('<div class="dds-itemgroup">')
+                                    .append('<label>' + o.label + '</label>')
+                                    .appendTo($items);
+                            }
+                            $.each(o.options, function(i, oo) {
+                                if (options.filter(query, oo)) {
+                                    var item = createOption(oo, items);
+                                    if (item !== false) {
+                                        items[key].$optgroup.append(item.$option);
+                                        items[key].$itemgroup.append(item.$item);
                                     }
-                                    $this.trigger('dds.setValue', [selected]);
+                                }
+                            });
+                            if (items[key].$optgroup.children().length === 0){
+                                items[key].$optgroup.remove();
+                                items[key].$itemgroup.remove();
+                                delete items[key];
+                            }
 
-                                });
+                        } else {
+                            if (options.filter(query, o)) {
+                                var item = createOption(o, items);
+                                if (item !== false) {
+                                    $this.append(item.$option.appendTo($this));
+                                    $items.append(item.$item);
+                                }
+                            }
                         }
-                    });
-                    $this.trigger('dds.setValue', [$this.val()]);                    
 
+                    });
             });
 
             
-            var items = [];
+            var def_data = [];
             var def_value = $this.val();
-            $this.find('option').each(function() {
-                items.push({ value: this.value, name: this.innerHTML});
+            $this.find('> *').each(function() {
+                var $elem = $(this);
+                if ($elem.prop('tagName') === 'OPTGROUP') {
+                    var optgroup = {
+                        is_optgroup: true,
+                        label: $elem.attr('label'),
+                        options: []
+                    };
+                    $elem.find('> option').each(function () {
+                        optgroup.options.push({ value: this.value, name: this.innerHTML});
+                    });
+                    def_data.push(optgroup);
+                } else if ($elem.prop('tagName') === 'OPTION') {
+                    def_data.push({ value: this.value, name: this.innerHTML});
+                }
             });
-            $this.find('option').remove();
-            options.source = options.source || items;
+            $this.html('');
+            options.source = options.source || def_data;
 
-            if (items.length) {
-                $this.trigger('dds.loadData', [items]);
-                $this.trigger('dds.setValue', [def_value]);
+            if (def_data.length) {
+                $this.trigger('dds.loadData', [def_data]);
+                $this.val(def_value);
+                $this.trigger('dds.refresh');
             } else {
-                $this.trigger('dds.getSource');
+                loadSource();
             }
 
 
