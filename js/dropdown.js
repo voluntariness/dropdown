@@ -34,13 +34,8 @@ $.fn.extend({
                     .append('<li class="divider">');
             }
 
-            // if (isMulti) {
-            //     $menu.append('<li class="divider">')
-            //         .append($('<li class="dds-options">').append($clear).append($finish))
-            // }
             $menu.append($items)
                 .append($loading);
-
 
             $this.data('dropdown', $wrap);
             $this.data('items', {});
@@ -79,8 +74,12 @@ $.fn.extend({
                         .attr('item-value', o.value)
                         .html(o.name)
                         .bind('click', function () {
-                            var selected = isMulti ? ! items[key].$option.prop('selected') : true;
-                            items[key].$option.prop('selected', selected);
+                            var selected = isMulti ? ! items[key].$option.attr('selected') : true;
+                            if (selected) {
+                                items[key].$option.attr('selected', 'selected');
+                            } else {
+                                items[key].$option.removeAttr('selected');  
+                            } 
                             $this.trigger('dds.refresh');
                             if (! isMulti) {
                                 $this.trigger('dds.hide');
@@ -122,13 +121,6 @@ $.fn.extend({
                 }
             });
             
-            // $clear.bind('click', function () {
-            //     $this.val(null).trigger('dds.refresh');
-            // });
-
-            // $finish.bind('click', function () {
-            //     $this.trigger('dds.hide');
-            // });
 
             $search.bind('click', function () {
                 loadSource();
@@ -248,7 +240,6 @@ $.fn.extend({
             });
             $this.html('');
             options.source = options.source || def_data;
-
             if (def_data.length) {
                 $this.trigger('dds.loadData', [def_data]);
                 $this.val(def_value);
